@@ -5,6 +5,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthAdminMiddleware;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get("/shop", [ShopController::class, 'index'])->name('shop.index');
+Route::get("/product-details/{slug}", [ShopController::class, 'product_details'])->name('shop.product.details');
 //user
 Route::middleware(['auth'])->group(function () {
     Route::get('/account-dashboard', [UserController::class, 'index'])->name('user.index');
@@ -46,5 +49,8 @@ Route::middleware(['auth', AuthAdminMiddleware::class])->group(function () {
         Route::get("/add-product", [ProductController::class, 'create'])->name('product.create');
         Route::post("/store-product", [ProductController::class, 'store'])->name('product.store');
         Route::get("/edit-product/{id}", [ProductController::class, 'edit'])->name('product.edit');
+        Route::put("/update-product/{id}", [ProductController::class, 'update'])->name('product.update');
+        Route::delete("/delete-product/{id}", [ProductController::class, 'destroy'])->name('product.destroy');
+        Route::get("/product-status-change/{id}", [ProductController::class, 'productStatusChange'])->name('product.status.change');
     });
 });

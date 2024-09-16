@@ -1,5 +1,12 @@
 @extends('layouts.admin')
 @section('title', 'Add Product')
+@push('styles')
+    <style>
+        .g-images{
+            display: flex;
+        }
+    </style>
+@endpush
 @section('content')
 <div class="main-content-inner">
     <!-- main-content-wrap -->
@@ -30,8 +37,9 @@
         </div>
         <!-- form-add-product -->
         <form class="tf-section-2 form-add-product" method="POST" enctype="multipart/form-data"
-            action="{{ route('product.store') }}">
+            action="{{ route('product.update', $product->id) }}">
             @csrf
+            @method('PUT')
             <div class="wg-box">
                 <fieldset class="name">
                     <div class="body-title mb-10">Product name <span class="tf-color-1">*</span>
@@ -64,7 +72,7 @@
                             <select class="" name="category_id">
                                 <option value="">Choose category</option>
                                 @foreach ($categories as $category)
-                                <option value="{{ $category->id  }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <option value="{{ $category->id  }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
                                 
                             </select>
@@ -81,7 +89,7 @@
                             <select class="" name="brand_id">
                                 <option value="">Choose Brand</option>
                                 @foreach ($brands as $brand)
-                                <option value="{{ $brand->id  }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}">{{ $brand->name  }}</option>
+                                <option value="{{ $brand->id  }}" {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>{{ $brand->name  }}</option>
                                 @endforeach
                             </select>
                             @error('brand_id')
@@ -97,7 +105,7 @@
                             class="tf-color-1">*</span></div>
                     <textarea class="mb-10 ht-150" name="short_description"
                         placeholder="Short Description" tabindex="0" aria-required="true"
-                        >{{ old('short_description') }}</textarea>
+                        >{{ old('short_description', $product->short_description) }}</textarea>
                     <div class="text-tiny">Do not exceed 100 characters when entering the
                         product name.</div>
                 </fieldset>
@@ -108,7 +116,7 @@
                     <div class="body-title mb-10">Description <span class="tf-color-1">*</span>
                     </div>
                     <textarea class="mb-10" name="description" placeholder="Description"
-                        tabindex="0" aria-required="true" >{{ old('description') }}</textarea>
+                        tabindex="0" aria-required="true" >{{ old('description', $product->description) }}</textarea>
                     <div class="text-tiny">Do not exceed 100 characters when entering the
                         product name.</div>
                 </fieldset>
@@ -121,9 +129,9 @@
                     <div class="body-title">Upload images <span class="tf-color-1">*</span>
                     </div>
                     <div class="upload-image flex-grow">
-                        <div class="item" id="imgpreview" style="display:none">
-                            <img src="../../../localhost_8000/images/upload/upload-1.png"
-                                class="effect8" alt="">
+                        <div class="item" id="imgpreview" >
+                            <img src="{{ asset($product->image) }}"
+                                class="effect8" alt="{{ $product->name }}">
                         </div>
                         <div id="upload-file" class="item up-load">
                             <label class="uploadfile" for="myFile">
@@ -144,9 +152,17 @@
                 <fieldset>
                     <div class="body-title mb-10">Upload Gallery Images</div>
                     <div class="upload-image mb-16">
-                         {{-- <div class="item">
-                            <img src="images/upload/upload-1.png" alt="">
-                        </div>                                                  --}}
+                        
+                        @if($product->images)
+                        @foreach (explode(',', $product->images) as $img)
+                        
+                            <div class="item gitems">
+                                <img src="{{ asset($img) }}" alt="">
+                             </div>
+                         
+                         @endforeach
+                        @endif
+                                                                    
                         <div id="galUpload" class="item up-load">
                             <label class="uploadfile" for="gFile">
                                 <span class="icon">
@@ -168,7 +184,7 @@
                         <div class="body-title mb-10">Regular Price <span
                                 class="tf-color-1">*</span></div>
                         <input class="mb-10" type="text" placeholder="Enter regular price"
-                            name="regular_price" tabindex="0" value="{{ old('regular_price') }}" aria-required="true"
+                            name="regular_price" tabindex="0" value="{{ old('regular_price', $product->regular_price) }}" aria-required="true"
                             >
                             @error('regular_price')
                                 <span class="text-danger text-center h6">{{ $message }}</span>
@@ -179,7 +195,7 @@
                         <div class="body-title mb-10">Sale Price <span
                                 class="tf-color-1">*</span></div>
                         <input class="mb-10" type="text" placeholder="Enter sale price"
-                            name="sale_price" tabindex="0" value="{{ old('sale_price') }}" aria-required="true"
+                            name="sale_price" tabindex="0" value="{{ old('sale_price', $product->sale_price) }}" aria-required="true"
                             >
                             @error('sale_price')
                                 <span class="text-danger text-center h6">{{ $message }}</span>
@@ -194,7 +210,7 @@
                         <div class="body-title mb-10">SKU <span class="tf-color-1">*</span>
                         </div>
                         <input class="mb-10" type="text" placeholder="Enter SKU" name="SKU"
-                            tabindex="0" value="{{ old('SKU') }}" aria-required="true" >
+                            tabindex="0" value="{{ old('SKU', $product->SKU) }}" aria-required="true" >
                             @error('SKU')
                                 <span class="text-danger text-center h6">{{ $message }}</span>
                             @enderror 
@@ -204,7 +220,7 @@
                         <div class="body-title mb-10">Quantity <span class="tf-color-1">*</span>
                         </div>
                         <input class="mb-10" type="text" placeholder="Enter quantity"
-                            name="quantity" tabindex="0" value="{{ old('quantity') }}" aria-required="true"
+                            name="quantity" tabindex="0" value="{{ old('quantity', $product->quantity) }}" aria-required="true"
                             >
                             @error('quantity')
                                 <span class="text-danger text-center h6">{{ $message }}</span>
@@ -218,8 +234,8 @@
                         <div class="body-title mb-10">Stock</div>
                         <div class="select mb-10">
                             <select class="" name="stock_status">
-                                <option value="instock" {{ old('stock_status') == 'instock' ? 'selected' : '' }}>InStock</option>
-                                <option value="outofstock" {{ old('stock_status') == 'outofstock' ? 'selected' : '' }}>Out of Stock</option>
+                                <option value="instock" {{ old('stock_status', $product->stock_status) == 'instock' ? 'selected' : '' }}>InStock</option>
+                                <option value="outofstock" {{ old('stock_status', $product->stock_status) == 'outofstock' ? 'selected' : '' }}>Out of Stock</option>
                             </select>
                             @error('stock_status')
                                 <span class="text-danger text-center h6">{{ $message }}</span>
@@ -231,8 +247,8 @@
                         <div class="body-title mb-10">Featured</div>
                         <div class="select mb-10">
                             <select class="" name="featured">
-                                <option value="0" {{ old('featured') == '0' ? 'selected' : '' }}>No</option>
-                                <option value="1" {{ old('featured') == '1' ? 'selected' : '' }}>Yes</option>
+                                <option value="0" {{ old('featured', $product->featured) == '0' ? 'selected' : '' }}>No</option>
+                                <option value="1" {{ old('featured', $product->featured) == '1' ? 'selected' : '' }}>Yes</option>
                             </select>
                             @error('featured')
                                 <span class="text-danger text-center h6">{{ $message }}</span>
@@ -244,8 +260,8 @@
                         <div class="body-title mb-10">Status</div>
                         <div class="select mb-10">
                             <select class="" name="status">
-                                <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>InActive</option>
-                                <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ old('status', $product->status) == '0' ? 'selected' : '' }}>InActive</option>
+                                <option value="1" {{ old('status', $product->status) == '1' ? 'selected' : '' }}>Active</option>
                             </select>
                             @error('status')
                                 <span class="text-danger text-center h6">{{ $message }}</span>
@@ -255,7 +271,7 @@
                     
                 </div>
                 <div class="cols gap10">
-                    <button class="tf-button w-full" type="submit">Add product</button>
+                    <button class="tf-button w-full" type="submit">Update product</button>
                 </div>
             </div>
         </form>
@@ -282,9 +298,13 @@
                 
                 const photoInp=$('#gFile');
                 const gPhotos=this.files;
-                $.each(gPhotos, function(key, val){
+                if(gPhotos){
+                    $('.gitems').remove();
+                    $.each(gPhotos, function(key, val){
                     $("#galUpload").prepend(`<div class="item gitems"><img src="${URL.createObjectURL(val)}" alt="galleryImgages"></div>`)
                 })
+                }
+                
                 
             });
 

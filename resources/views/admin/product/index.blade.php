@@ -56,6 +56,7 @@
                             <th>Featured</th>
                             <th>Stock</th>
                             <th>Quantity</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -81,6 +82,13 @@
                             <td class="{{ $product->stock_status == 'instock' ? 'text-success' : 'text-danger' }}">{{ $product->stock_status == 'instock' ? 'InStock' : 'Out of Stock' }}</td>
                             <td>{{ $product->quantity }}</td>
                             <td>
+                                @if($product->status == 1)
+                                    <a href="{{ route('product.status.change',$product->id) }}" class=" badge rounded-pill bg-success">Active</a>
+                                @else
+                                    <a href="{{ route('product.status.change',$product->id) }}" class="badge rounded-pill bg-danger">Inactive</a>
+                                @endif
+                            </td>
+                            <td>
                                 <div class="list-icon-function">
                                     <a href="#" target="_blank">
                                         <div class="item eye">
@@ -92,7 +100,9 @@
                                             <i class="icon-edit-3"></i>
                                         </div>
                                     </a>
-                                    <form action="#" method="POST">
+                                    <form action="{{ route('product.destroy', $product->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
                                         <div class="item text-danger delete">
                                             <i class="icon-trash-2"></i>
                                         </div>
@@ -119,3 +129,26 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(function(){
+            $('.delete').on('click', function(e){
+                e.preventDefault();
+                var form=$(this).closest('form');
+                swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this imaginary file!",
+                    type: "warning",
+                    buttons: ['No', 'Yes'],
+                    confirmButtonColor: '#DC3545', 
+                    showLoaderOnConfirm: true,
+                }).then(function(result) {
+                    if (result) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

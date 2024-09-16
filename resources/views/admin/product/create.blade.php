@@ -81,7 +81,7 @@
                             <select class="" name="brand_id">
                                 <option value="">Choose Brand</option>
                                 @foreach ($brands as $brand)
-                                <option value="{{ $brand->id  }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}">{{ $brand->name  }}</option>
+                                <option value="{{ $brand->id  }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name  }}</option>
                                 @endforeach
                             </select>
                             @error('brand_id')
@@ -252,7 +252,7 @@
                             @enderror 
                         </div>
                     </fieldset>
-                    
+            
                 </div>
                 <div class="cols gap10">
                     <button class="tf-button w-full" type="submit">Add product</button>
