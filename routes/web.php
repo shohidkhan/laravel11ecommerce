@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -16,9 +17,13 @@ Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get("/shop", [ShopController::class, 'index'])->name('shop.index');
 Route::get("/product-details/{slug}", [ShopController::class, 'product_details'])->name('shop.product.details');
+Route::get("/cart", [CartController::class, 'index'])->name('cart.index');
 //user
 Route::middleware(['auth'])->group(function () {
     Route::get('/account-dashboard', [UserController::class, 'index'])->name('user.index');
+    Route::post("/add-to-cart", [CartController::class, 'addToCart'])->name('add-to-cart');
+    Route::get("/remove-cart/{id}", [CartController::class, 'removeCart'])->name('remove-cart');
+    Route::put("/update-cart", [CartController::class, 'updateCart'])->name('update-cart');
 });
 //admin
 Route::middleware(['auth', AuthAdminMiddleware::class])->group(function () {

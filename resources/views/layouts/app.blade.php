@@ -314,7 +314,7 @@
                 <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
               </li>
               <li class="navigation__item">
-                <a href="cart.html" class="navigation__link">Cart</a>
+                <a href="{{ route('cart.index')  }}" class="navigation__link">Cart</a>
               </li>
               <li class="navigation__item">
                 <a href="about.html" class="navigation__link">About</a>
@@ -403,7 +403,7 @@
                 <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
               </li>
               <li class="navigation__item">
-                <a href="cart.html" class="navigation__link">Cart</a>
+                <a href="{{ route('cart.index') }}" class="navigation__link">Cart</a>
               </li>
               <li class="navigation__item">
                 <a href="about.html" class="navigation__link">About</a>
@@ -493,7 +493,13 @@
                 xmlns="http://www.w3.org/2000/svg">
                 <use href="#icon_cart" />
               </svg>
-              <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+              <span class="cart-amount d-block position-absolute js-cart-items-count">
+                @auth
+                  {{ App\Models\Cart::where('user_id', Auth::id())->count() }}
+                @else
+                0
+                @endauth
+              </span>
             </a>
           </div>
         </div>
