@@ -67,7 +67,7 @@
                                     </div>
                                 </td>
                                 <td>{{ $brand->slug }}</td>
-                                <td><a href="#" target="_blank">0</a></td>
+                                <td>{{ $brand->products->count() }}</td>
                                 <td>{{ $brand->user->name }}</td>
                                 <td>
                                     <div class="list-icon-function">

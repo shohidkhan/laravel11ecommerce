@@ -24,6 +24,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post("/add-to-cart", [CartController::class, 'addToCart'])->name('add-to-cart');
     Route::get("/remove-cart/{id}", [CartController::class, 'removeCart'])->name('remove-cart');
     Route::put("/update-cart", [CartController::class, 'updateCart'])->name('update-cart');
+    Route::delete('/clear-cart', [CartController::class, 'clearCart'])->name('clear.cart');
+
 });
 //admin
 Route::middleware(['auth', AuthAdminMiddleware::class])->group(function () {

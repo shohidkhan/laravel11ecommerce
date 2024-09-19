@@ -116,7 +116,7 @@ class ProductController extends Controller {
             "brand_id" => "required",
             "name" => "required",
             "slug" => "required|unique:products,slug," . $id,
-            "short_description" => "required",
+            "short_description" => "required|max:500",
             "description" => "required",
             "regular_price" => "required",
             "sale_price" => "required",

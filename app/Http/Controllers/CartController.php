@@ -58,4 +58,10 @@ class CartController extends Controller {
 
         return redirect()->back()->with("status", "Cart updated successfully");
     }
+
+    function clearCart() {
+        $user_id = Auth::id();
+        Cart::where("user_id", $user_id)->delete();
+        return redirect()->back()->with("status", "Cart cleared successfully");
+    }
 }

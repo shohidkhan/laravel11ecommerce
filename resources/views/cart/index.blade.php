@@ -116,6 +116,11 @@
               <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
                 value="APPLY COUPON">
             </form>
+            <form action="{{ route('clear.cart') }}" method="POST">
+              @csrf
+              @method('DELETE')
+              <button class="btn btn-light" type="submit">Clear CART</button>
+            </form>
           </div>
         </div>
         <div class="shopping-cart__totals-wrapper">
