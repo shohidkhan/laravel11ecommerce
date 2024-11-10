@@ -66,6 +66,16 @@
           </div>
         </div>
         <div class="col-lg-5">
+          @if(Session::has('status'))
+        <div class="alert alert-success">
+            {{ Session::get('status') }}
+        </div>
+        @endif
+        @if(Session::has('error'))
+        <div class="alert alert-danger">
+            {{ Session::get('error') }}
+        </div>
+        @endif
           <div class="d-flex justify-content-between mb-4 pb-md-2">
             <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
               <a href="#" class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
@@ -154,10 +164,14 @@
           @endauth
           
           <div class="product-single__addtolinks">
-            <a href="#" class="menu-link menu-link_us-s add-to-wishlist"><svg width="16" height="16" viewBox="0 0 20 20"
+            <form action="{{ route('add.to.wishlist') }}" method="POST">
+              @csrf
+              <input type="hidden" name="product_id" value="{{ $productDetails->id }}">
+              <button type="submit" class="menu-link menu-link_us-s add-to-wishlist btn"><svg width="16" height="16" viewBox="0 0 20 20"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_heart" />
-              </svg><span>Add to Wishlist</span></a>
+                <use href="#icon_heart"  />
+              </svg><span>Add to Wishlist</span></button>
+            </form>
             <share-button class="share-button">
               <button class="menu-link menu-link_us-s to-share border-0 bg-transparent d-flex align-items-center">
                 <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">

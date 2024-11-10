@@ -35,6 +35,15 @@
             {{ Session::get('status') }}
           </div>
           @endif
+            @if(Session::has('success'))
+            <div class="alert alert-success" >
+                {{ Session::get('success') }}
+            </div>
+            @elseif (Session::has('error'))
+            <div class="alert alert-danger" >
+                {{ Session::get('error') }}
+            </div>
+            @endif
           <table class="cart-table">
             <thead>
               <tr>
@@ -111,38 +120,103 @@
           <div class="cart-table-footer">
             <button class="btn btn-light" type="submit">UPDATE CART</button>
           </form>
-            <form action="#" class="position-relative bg-body">
-              <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code">
+          @if(!Session::has('coupon'))
+            <form action="{{ route('apply.coupon') }}" class="position-relative bg-body" method="POST">
+              @csrf
+              <input class="form-control text-success" style="color: green !important;" type="text" name="coupon_code" placeholder="Coupon Code">
               <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
                 value="APPLY COUPON">
             </form>
+            @else
+            <form action="{{ route('remove.coupon') }}" class="position-relative bg-body" method="POST">
+              @csrf
+              @method('DELETE')
+              <input class="form-control text-success" style="color: green !important;" type="text" name="coupon_code" placeholder="Coupon Code" value="@if(Session::has('coupon')){{ Session::get('coupon')['code'] }} Applied @endif" @if(Session::has('coupon')) readonly @endif>
+              <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
+                value="REMOVE COUPON" style="color: red !important;" >
+            </form>
+            @endif
+
             <form action="{{ route('clear.cart') }}" method="POST">
               @csrf
               @method('DELETE')
               <button class="btn btn-light" type="submit">Clear CART</button>
             </form>
+            
           </div>
+
         </div>
         <div class="shopping-cart__totals-wrapper">
           <div class="sticky-content">
             <div class="shopping-cart__totals">
               <h3>Cart Totals</h3>
+              @if(Session::has('discount'))
               <table class="cart-totals">
                 <tbody>
                   <tr>
-                    <th>Subtotal</th>
+                    <th>Cart total</th>
                     <td>${{ $total }}</td>
                   </tr>
                   <tr>
                     <th>Shipping Charge</th>
                     <td>
-                      <div class="form-check">
-                        
-                        <label class="form-check-label" for="free_shipping">  ${{ $shipping }}</label>
-                      </div>
+                        ${{ $shipping }}
                       
-                      
-                      <div>Shipping to ALL.</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>VAT</th>
+                    <td>${{ $vat }}</td>
+                  </tr>
+                  <tr>
+                    <th>Subtotal</th>
+                    <td>${{ $totalwithVat }}</td>
+                  </tr>
+                  <tr>
+                    <th>Discount Code </th>
+                    <td style="color: green">{{ Session::get('coupon')['code'] }}</td>
+                  </tr>
+                  @if(Session::get('coupon')['type'] == 'percent')
+                  <tr>
+                    <th>Discount Value </th>
+                    <td style="color: green">
+                      @if(Session::get('coupon')['type'] == 'fixed')
+                      $ {{ Session::get('coupon')['value'] }}
+                      @else
+                      {{ Session::get('coupon')['value'] }} %
+                      @endif
+                    </td>
+                  </tr>
+                  @endif
+                  <tr>
+                    <th>Discount Type </th>
+                    <td style="color: green">
+                      @if(Session::get('coupon')['type'])
+                      {{ Session::get('coupon')['type'] }}
+                      @endif
+                    </td>
+                  </tr>
+                  <tr>
+                    <tr>
+                      <th>Discount {{ Session::get('coupon')['code'] }}</th>
+                      <td style="color: red">-${{ Session::get('discount')['discount'] }}</td>
+                    </tr>
+                    <th>Total After Discount</th>
+                    <td style="color: green;">${{ Session::get('discount')['total'] }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              @else
+              <table class="cart-totals">
+                <tbody>
+                  <tr>
+                    <th>Carttotal</th>
+                    <td>${{ $total }}</td>
+                  </tr>
+                  <tr>
+                    <th>Shipping Charge</th>
+                    <td>
+                        ${{ $shipping }}
                       
                     </td>
                   </tr>
@@ -156,6 +230,7 @@
                   </tr>
                 </tbody>
               </table>
+              @endif
             </div>
             <div class="mobile_fixed-btn_wrapper">
               <div class="button-wrapper container">

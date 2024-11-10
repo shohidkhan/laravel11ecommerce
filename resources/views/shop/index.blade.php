@@ -319,7 +319,16 @@
             </div>
           </div>
         </div>
-
+        @if(Session::has('status'))
+        <div class="alert alert-success">
+            {{ Session::get('status') }}
+        </div>
+        @endif
+        @if(Session::has('error'))
+        <div class="alert alert-danger">
+            {{ Session::get('error') }}
+        </div>
+        @endif
         <div class="products-grid row row-cols-2 row-cols-md-3" id="products-grid">
             @forelse ($products as $product)
             <div class="product-card-wrapper">
@@ -386,21 +395,22 @@
                       </div>
                       <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
                     </div>
-    
+                    <form action="{{ route("add.to.wishlist") }}" method="POST">
+                      @csrf
+                      <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist"
-                      title="Add To Wishlist">
-                      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <use href="#icon_heart" />
+                      title="Add To Wishlist" type="submit">
+                      <svg width="16" height="16" viewBox="0 0 20 20"  xmlns="http://www.w3.org/2000/svg">
+                        <use href="#icon_heart"   />
                       </svg>
                     </button>
+                  </form>
                   </div>
                 </div>
               </div>
               @empty
               <p class="text-center ">No products found</p>
             @endforelse
-
-          
         </div>
 
         <div class="divider"></div>
